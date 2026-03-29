@@ -88,6 +88,24 @@ int biasnorm(Tensor *x, Tensor *bias, double log_scale)
     return 1;
 }
 
+void Check_Intermediate(Tensor *tensor_to_check, char *python_bin_path) {
+    Tensor *py_tensor;
+    TENSOR_Create(&py_tensor, tensor_to_check->dim1, tensor_to_check->dim2, tensor_to_check->dim3, tensor_to_check->dim4);
+    FILE_ReadTensorBinary(py_tensor, python_bin_path);
+    
+    printf("Checking %s...\n", python_bin_path);
+
+    int n = 0;
+    for(int i = 0; i < TENSOR_TensorSize(tensor_to_check); i++) {
+        if (fabs(tensor_to_check->data[i] - py_tensor->data[i]) > 1e-4 && n < 5) {
+            printf("                    [LỖI] Mismatch at index %d: Python %f, C %f\n", i, py_tensor->data[i], tensor_to_check->data[i]);
+            n++;
+        }
+    }
+    if (n == 0) printf("                    [PASS] %s khop hoan toan!\n", python_bin_path);
+    TENSOR_Free(&py_tensor);
+}
+
 int main()
 {
     int channel, feature_dim, in_channels;
@@ -113,23 +131,23 @@ int main()
         "..\\docs\\model_weight_bin\\encoder_embed_out_norm_log_scale.bin",
         "..\\docs\\model_weight_bin\\encoder_embed_out_norm_bias.bin"
     };
-/*
-//     char *output_files[] = {
-//         "..\\docs\\encoder_embed_conv_0.bin",
-//         "..\\docs\\encoder_embed_conv_1.bin",
-//         "..\\docs\\encoder_embed_conv_3.bin",
-//         "..\\docs\\encoder_embed_conv_4.bin",
-//         "..\\docs\\encoder_embed_conv_6.bin",
-//         "..\\docs\\encoder_embed_conv_7.bin",
-//         "..\\docs\\encoder_embed_conv_9.bin",
-//         "..\\docs\\encoder_embed_convnext_depthwise_conv.bin",
-//         "..\\docs\\encoder_embed_convnext_pointwise_conv1.bin",
-//         "..\\docs\\encoder_embed_convnext_swooshL.bin",
-//         "..\\docs\\encoder_embed_convnext_pointwise_conv2.bin",
-//         "..\\docs\\encoder_embed_out.bin",
-//         "..\\docs\\encoder_embed_out_norm.bin"
-//     };
-*/
+
+    char *output_files[] = {
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_0.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_1.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_3.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_4.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_6.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_7.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_conv_9.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_convnext_depthwise_conv.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_convnext_pointwise_conv1.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_convnext_swooshL.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_convnext_pointwise_conv2.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_out.bin",
+        "..\\docs\\inference_outputs_bin\\encoder_embed_out_norm.bin"
+    };
+
     // Model input tensor
     Tensor *encoder_model_input; 
 
@@ -196,23 +214,38 @@ int main()
 
     // conv2d
     TENSOR_conv2d(encoder_model_input, encoder_embed_conv_0, embed_conv_0_weight, embed_conv_0_bias, 1, 1, 0, 1, 1);
+
+    Check_Intermediate(encoder_embed_conv_0, output_files[0]);
+
     TENSOR_Swoosh(encoder_embed_conv_0, 'r');
+
+    Check_Intermediate(encoder_embed_conv_0, output_files[2]);
 
     TENSOR_Free(&encoder_model_input); 
     TENSOR_Free(&embed_conv_0_weight);
     TENSOR_Free(&embed_conv_0_bias);
 
     TENSOR_conv2d(encoder_embed_conv_0, encoder_embed_conv_4, embed_conv_4_weight, embed_conv_4_bias, 2, 2, 0, 0, 1);
+
+    Check_Intermediate(encoder_embed_conv_4, output_files[3]);
+
     TENSOR_Swoosh(encoder_embed_conv_4, 'r');
+
+    Check_Intermediate(encoder_embed_conv_4, output_files[4]);
 
     TENSOR_Free(&encoder_embed_conv_0); 
     TENSOR_Free(&embed_conv_4_weight);
     TENSOR_Free(&embed_conv_4_bias);
 
     TENSOR_conv2d(encoder_embed_conv_4, encoder_embed_conv_7, embed_conv_7_weight, embed_conv_7_bias, 1, 2, 0, 0, 1);
+
+    Check_Intermediate(encoder_embed_conv_7, output_files[5]);
+
     TENSOR_Swoosh(encoder_embed_conv_7, 'r');
 
-    TENSOR_Free(&encoder_embed_conv_4); 
+    Check_Intermediate(encoder_embed_conv_7, output_files[6]);
+
+    TENSOR_Free(&encoder_embed_conv_4);
     TENSOR_Free(&embed_conv_7_weight);
     TENSOR_Free(&embed_conv_7_bias);                
 
@@ -241,18 +274,26 @@ int main()
 
     TENSOR_conv2d(encoder_embed_conv_7, encoder_embed_convnext_depthwise_conv, embed_convnext_depthwise_conv_weight, embed_convnext_depthwise_conv_bias, 1, 1, 3, 3, channel);
 
+    Check_Intermediate(encoder_embed_convnext_depthwise_conv, output_files[7]);
+
     TENSOR_Free(&embed_convnext_depthwise_conv_weight);
     TENSOR_Free(&embed_convnext_depthwise_conv_bias);
 
     TENSOR_conv2d(encoder_embed_convnext_depthwise_conv, encoder_embed_convnext_pointwise_conv1, embed_convnext_depthwise_conv1_weight, embed_convnext_depthwise_conv1_bias, 1, 1, 0, 0, 1); 
+
+    Check_Intermediate(encoder_embed_convnext_pointwise_conv1, output_files[8]);
     
     TENSOR_Swoosh(encoder_embed_convnext_pointwise_conv1, 'l');
+
+    Check_Intermediate(encoder_embed_convnext_pointwise_conv1, output_files[9]);
 
     TENSOR_Free(&encoder_embed_convnext_depthwise_conv);
     TENSOR_Free(&embed_convnext_depthwise_conv1_weight);
     TENSOR_Free(&embed_convnext_depthwise_conv1_bias); 
 
     TENSOR_conv2d(encoder_embed_convnext_pointwise_conv1, encoder_embed_convnext_pointwise_conv2, embed_convnext_depthwise_conv2_weight, embed_convnext_depthwise_conv2_bias, 1, 1, 0, 0, 1);
+
+    Check_Intermediate(encoder_embed_convnext_pointwise_conv2, output_files[10]);
 
     TENSOR_Free(&encoder_embed_convnext_pointwise_conv1);
     TENSOR_Free(&embed_convnext_depthwise_conv2_weight);
@@ -264,7 +305,7 @@ int main()
 
     TENSOR_Transpose(encoder_embed_convnext_pointwise_conv2, perm, 4);
 
-TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, 1, encoder_embed_convnext_pointwise_conv2->dim2, encoder_embed_convnext_pointwise_conv2->dim3 * encoder_embed_convnext_pointwise_conv2->dim4); 
+    TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, 1, encoder_embed_convnext_pointwise_conv2->dim2, encoder_embed_convnext_pointwise_conv2->dim3 * encoder_embed_convnext_pointwise_conv2->dim4); 
 
     TENSOR_Free(&encoder_embed_conv_7);
 
@@ -280,6 +321,8 @@ TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, 1, encoder_embed_convn
 
     TENSOR_Linear(encoder_embed_convnext_pointwise_conv2, encoder_embed_out, encoder_embed_out_weight, encoder_embed_out_bias);
 
+    Check_Intermediate(encoder_embed_out, output_files[11]);
+
     TENSOR_Free(&encoder_embed_convnext_pointwise_conv2);
     TENSOR_Free(&encoder_embed_out_weight);
     TENSOR_Free(&encoder_embed_out_bias);
@@ -294,4 +337,27 @@ TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, 1, encoder_embed_convn
     biasnorm(encoder_embed_out, encoder_embed_out_norm_bias, log_scale);
 
     TENSOR_Free(&encoder_embed_out_norm_bias);
+
+    Check_Intermediate(encoder_embed_out, output_files[12]);
+
+//     printf("%d %d %d %d\n", encoder_embed_out->dim1, encoder_embed_out->dim2, encoder_embed_out->dim3, encoder_embed_out->dim4);
+
+//     // Check output
+//     TENSOR_Create(&encoder_embed_out_check, 1, 1, 153, 192);
+
+//     FILE_ReadTensorBinary(encoder_embed_out_check, "..\\docs\\inference_outputs_bin\\encoder_embed_out_norm.bin");
+
+//     int n = 0;
+
+//     for(int i = 0; i < TENSOR_TensorSize(encoder_embed_out); i++) {
+//         if (fabs(encoder_embed_out->data[i] - encoder_embed_out_check->data[i]) > 1e-5 && n < 10) {
+//             printf("Mismatch at index %d: expected %f, got %f\n", i, encoder_embed_out_check->data[i], encoder_embed_out->data[i]);
+//             n++;
+//         }
+//     }
+
+//     TENSOR_Free(&encoder_embed_out);
+//     TENSOR_Free(&encoder_embed_out_check);
+
+    return 0;
 }
