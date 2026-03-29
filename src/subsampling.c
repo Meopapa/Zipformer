@@ -339,25 +339,5 @@ int main()
     TENSOR_Free(&encoder_embed_out_norm_bias);
 
     Check_Intermediate(encoder_embed_out, output_files[12]);
-
-//     printf("%d %d %d %d\n", encoder_embed_out->dim1, encoder_embed_out->dim2, encoder_embed_out->dim3, encoder_embed_out->dim4);
-
-//     // Check output
-//     TENSOR_Create(&encoder_embed_out_check, 1, 1, 153, 192);
-
-//     FILE_ReadTensorBinary(encoder_embed_out_check, "..\\docs\\inference_outputs_bin\\encoder_embed_out_norm.bin");
-
-//     int n = 0;
-
-//     for(int i = 0; i < TENSOR_TensorSize(encoder_embed_out); i++) {
-//         if (fabs(encoder_embed_out->data[i] - encoder_embed_out_check->data[i]) > 1e-5 && n < 10) {
-//             printf("Mismatch at index %d: expected %f, got %f\n", i, encoder_embed_out_check->data[i], encoder_embed_out->data[i]);
-//             n++;
-//         }
-//     }
-
-//     TENSOR_Free(&encoder_embed_out);
-//     TENSOR_Free(&encoder_embed_out_check);
-
     return 0;
 }
