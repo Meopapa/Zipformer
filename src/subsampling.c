@@ -88,21 +88,60 @@ int biasnorm(Tensor *x, Tensor *bias, double log_scale)
     return 1;
 }
 
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+
 void Check_Intermediate(Tensor *tensor_to_check, char *python_bin_path) {
     Tensor *py_tensor;
     TENSOR_Create(&py_tensor, tensor_to_check->dim1, tensor_to_check->dim2, tensor_to_check->dim3, tensor_to_check->dim4);
     FILE_ReadTensorBinary(py_tensor, python_bin_path);
     
-    printf("Checking %s...\n", python_bin_path);
+    FILE *log_file = fopen("..\\docs\\check_results_log.txt", "a");
+    
+    char *layer_name = strrchr(python_bin_path, '\\');
+    layer_name = layer_name ? layer_name + 1 : python_bin_path;
 
+    int size = TENSOR_TensorSize(tensor_to_check);
+    double sum_squared_error = 0.0;
+    int has_error = 0;
     int n = 0;
-    for(int i = 0; i < TENSOR_TensorSize(tensor_to_check); i++) {
-        if (fabs(tensor_to_check->data[i] - py_tensor->data[i]) > 1e-4 && n < 5) {
-            printf("                    [LỖI] Mismatch at index %d: Python %f, C %f\n", i, py_tensor->data[i], tensor_to_check->data[i]);
-            n++;
+
+    printf("%s:\n", layer_name);
+    if (log_file) fprintf(log_file, "%s:\n", layer_name);
+
+    for(int i = 0; i < size; i++) {
+        double diff = tensor_to_check->data[i] - py_tensor->data[i];
+        sum_squared_error += diff * diff;
+
+        if (fabs(diff) > 1e-4) {
+            has_error = 1;
+            if (n < 5) { 
+                printf("- [LỖI CỤC BỘ] Index %d: Python %f, C %f\n", i, py_tensor->data[i], tensor_to_check->data[i]);
+                if (log_file) fprintf(log_file, "- [LỖI CỤC BỘ] Index %d: Python %f, C %f\n", i, py_tensor->data[i], tensor_to_check->data[i]);
+                n++;
+            }
         }
     }
-    if (n == 0) printf("                    [PASS] %s khop hoan toan!\n", python_bin_path);
+    
+    if (!has_error) {
+        double mse = sum_squared_error / size;
+        double rmse = sqrt(mse);
+        
+        printf("- RMSE: %e\n", rmse);
+        printf("- MSE: %e\n", mse);
+        if (log_file) {
+            fprintf(log_file, "- RMSE: %e\n", rmse);
+            fprintf(log_file, "- MSE: %e\n", mse);
+        }
+    }
+
+    printf("\n");
+    if (log_file) {
+        fprintf(log_file, "\n");
+        fclose(log_file);
+    }
+
     TENSOR_Free(&py_tensor);
 }
 
