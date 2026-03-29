@@ -96,24 +96,24 @@ int main()
     char *input_file = "..\\docs\\input_features_bin\\input_features.bin"; 
 
     char *param_files[] = {
-        "..\\docs\\encoder_embed_conv_0_weight.bin",
-        "..\\docs\\encoder_embed_conv_0_bias.bin",
-        "..\\docs\\encoder_embed_conv_4_weight.bin",
-        "..\\docs\\encoder_embed_conv_4_bias.bin",
-        "..\\docs\\encoder_embed_conv_7_weight.bin",
-        "..\\docs\\encoder_embed_conv_7_bias.bin",
-        "..\\docs\\encoder_embed_convnext_depthwise_conv_weight.bin",
-        "..\\docs\\encoder_embed_convnext_depthwise_conv_bias.bin",
-        "..\\docs\\encoder_embed_convnext_pointwise_conv1_weight.bin",
-        "..\\docs\\encoder_embed_convnext_pointwise_conv1_bias.bin",
-        "..\\docs\\encoder_embed_convnext_pointwise_conv2_weight.bin",
-        "..\\docs\\encoder_embed_convnext_pointwise_conv2_bias.bin",
-        "..\\docs\\encoder_embed_out_weight.bin",
-        "..\\docs\\encoder_embed_out_bias.bin",
-        "..\\docs\\encoder_embed_out_norm_log_scale.bin",
-        "..\\docs\\encoder_embed_out_norm_bias.bin"
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_0_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_0_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_4_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_4_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_7_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_7_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_depthwise_conv_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_depthwise_conv_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv1_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv1_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv2_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv2_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_norm_log_scale.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_norm_bias.bin"
     };
-
+/*
 //     char *output_files[] = {
 //         "..\\docs\\encoder_embed_conv_0.bin",
 //         "..\\docs\\encoder_embed_conv_1.bin",
@@ -129,7 +129,7 @@ int main()
 //         "..\\docs\\encoder_embed_out.bin",
 //         "..\\docs\\encoder_embed_out_norm.bin"
 //     };
-
+*/
     // Model input tensor
     Tensor *encoder_model_input; 
 
@@ -172,7 +172,7 @@ int main()
     // Create input
     TENSOR_Create(&encoder_model_input, 1, 1, 313, 80);
 
-    FILE_ReadTensorBinary(input_file, encoder_model_input);
+    FILE_ReadTensorBinary(encoder_model_input, input_file);
 
     // Create parameters
     TENSOR_Create(&embed_conv_0_weight, 8, 1, 3, 3);
@@ -182,12 +182,12 @@ int main()
     TENSOR_Create(&embed_conv_7_weight, 128, 32, 3, 3);
     TENSOR_Create(&embed_conv_7_bias, 128, 1, 1, 1);
         
-    FILE_ReadTensorBinary(param_files[0], embed_conv_0_weight);
-    FILE_ReadTensorBinary(param_files[1], embed_conv_0_bias);
-    FILE_ReadTensorBinary(param_files[2], embed_conv_4_weight);
-    FILE_ReadTensorBinary(param_files[3], embed_conv_4_bias);
-    FILE_ReadTensorBinary(param_files[4], embed_conv_7_weight);
-    FILE_ReadTensorBinary(param_files[5], embed_conv_7_bias);
+    FILE_ReadTensorBinary(embed_conv_0_weight, param_files[0]);
+    FILE_ReadTensorBinary(embed_conv_0_bias, param_files[1]);
+    FILE_ReadTensorBinary(embed_conv_4_weight, param_files[2]);
+    FILE_ReadTensorBinary(embed_conv_4_bias, param_files[3]);
+    FILE_ReadTensorBinary(embed_conv_7_weight, param_files[4]);
+    FILE_ReadTensorBinary(embed_conv_7_bias, param_files[5]);
 
     // Create output tensors
     TENSOR_Create(&encoder_embed_conv_0, 1, 8, 311, 80);
@@ -229,12 +229,12 @@ int main()
     TENSOR_Create(&encoder_embed_convnext_pointwise_conv1, 1, 384, 153, 19);
     TENSOR_Create(&encoder_embed_convnext_pointwise_conv2, 1, 128, 153, 19);
 
-    FILE_ReadTensorBinary(param_files[6], embed_convnext_depthwise_conv_weight);
-    FILE_ReadTensorBinary(param_files[7], embed_convnext_depthwise_conv_bias);
-    FILE_ReadTensorBinary(param_files[8], embed_convnext_depthwise_conv1_weight);
-    FILE_ReadTensorBinary(param_files[9], embed_convnext_depthwise_conv1_bias);
-    FILE_ReadTensorBinary(param_files[10], embed_convnext_depthwise_conv2_weight);
-    FILE_ReadTensorBinary(param_files[11], embed_convnext_depthwise_conv2_bias);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv_weight, param_files[6]);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv_bias, param_files[7]);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv1_weight, param_files[8]);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv1_bias, param_files[9]);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv2_weight, param_files[10]);
+    FILE_ReadTensorBinary(embed_convnext_depthwise_conv2_bias, param_files[11]);
 
 
     channel = encoder_embed_conv_7->dim2;
@@ -260,26 +260,22 @@ int main()
 
     TENSOR_Add(encoder_embed_convnext_pointwise_conv2, encoder_embed_conv_7); //Bypass
 
-    int new_dim[4] = {0};
-    new_dim[0] = encoder_embed_conv_7->dim1;
-    new_dim[1] = encoder_embed_conv_7->dim3;
-    new_dim[2] = encoder_embed_conv_7->dim2;
-    new_dim[3] = encoder_embed_conv_7->dim4;
+    int perm[4] = {0, 2, 1, 3};
 
-    TENSOR_Transpose(encoder_embed_convnext_pointwise_conv2, &new_dim, 4);
+    TENSOR_Transpose(encoder_embed_convnext_pointwise_conv2, perm, 4);
 
-    TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, encoder_embed_convnext_pointwise_conv2->dim1, encoder_embed_convnext_pointwise_conv2->dim3, encoder_embed_convnext_pointwise_conv2->dim2 * encoder_embed_convnext_pointwise_conv2->dim4);
+TENSOR_Reshape(encoder_embed_convnext_pointwise_conv2, 1, 1, encoder_embed_convnext_pointwise_conv2->dim2, encoder_embed_convnext_pointwise_conv2->dim3 * encoder_embed_convnext_pointwise_conv2->dim4); 
 
     TENSOR_Free(&encoder_embed_conv_7);
 
     // linear
-    TENSOR_Create(&encoder_embed_out_weight, 192, 2432, 1, 1);
-    TENSOR_Create(&encoder_embed_out_bias, 192, 1, 1, 1);
+    TENSOR_Create(&encoder_embed_out_weight, 1, 1, 192, 2432);
+    TENSOR_Create(&encoder_embed_out_bias, 1, 1, 1, 192);
     
-    TENSOR_Create(&encoder_embed_out, 1, 153, 192, 1);
+    TENSOR_Create(&encoder_embed_out, 1, 1, 153, 192);
         
-    FILE_ReadTensorBinary(param_files[12], encoder_embed_out_weight);
-    FILE_ReadTensorBinary(param_files[13], encoder_embed_out_bias);
+    FILE_ReadTensorBinary(encoder_embed_out_weight, param_files[12]);
+    FILE_ReadTensorBinary(encoder_embed_out_bias, param_files[13]);
 
 
     TENSOR_Linear(encoder_embed_convnext_pointwise_conv2, encoder_embed_out, encoder_embed_out_weight, encoder_embed_out_bias);
@@ -289,11 +285,11 @@ int main()
     TENSOR_Free(&encoder_embed_out_bias);
 
     // Bias Norm
-    TENSOR_Create(&encoder_embed_out_norm_bias, 192, 1, 1, 1);
+    TENSOR_Create(&encoder_embed_out_norm_bias, 1, 1, 1, 192);
 
-    FILE_ReadTensorBinary(param_files[15], encoder_embed_out_norm_bias);
+    FILE_ReadTensorBinary(encoder_embed_out_norm_bias, param_files[15]);
 
-    log_scale = read_parameters("D:\\AI_C\\parameters\\encoder_embed_out_norm_log_scale.bin");
+    log_scale = read_parameters("D:\\zip_C\\docs\\model_weight_bin\\encoder_embed_out_norm_log_scale.bin");
 
     biasnorm(encoder_embed_out, encoder_embed_out_norm_bias, log_scale);
 
