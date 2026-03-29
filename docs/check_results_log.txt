@@ -1,0 +1,48 @@
+encoder_embed_conv_0.bin:
+- RMSE: 7.858337e-08
+- MSE: 6.175347e-15
+
+encoder_embed_conv_3.bin:
+- RMSE: 2.581222e-08
+- MSE: 6.662707e-16
+
+encoder_embed_conv_4.bin:
+- RMSE: 5.631399e-07
+- MSE: 3.171266e-13
+
+encoder_embed_conv_6.bin:
+- RMSE: 1.290817e-07
+- MSE: 1.666208e-14
+
+encoder_embed_conv_7.bin:
+- RMSE: 1.032952e-06
+- MSE: 1.066991e-12
+
+encoder_embed_conv_9.bin:
+- RMSE: 4.416765e-07
+- MSE: 1.950781e-13
+
+encoder_embed_convnext_depthwise_conv.bin:
+- RMSE: 2.996373e-08
+- MSE: 8.978251e-16
+
+encoder_embed_convnext_pointwise_conv1.bin:
+- RMSE: 1.269282e-06
+- MSE: 1.611076e-12
+
+encoder_embed_convnext_swooshL.bin:
+- RMSE: 3.685983e-07
+- MSE: 1.358647e-13
+
+encoder_embed_convnext_pointwise_conv2.bin:
+- RMSE: 7.235960e-07
+- MSE: 5.235912e-13
+
+encoder_embed_out.bin:
+- RMSE: 1.058136e-06
+- MSE: 1.119651e-12
+
+encoder_embed_out_norm.bin:
+- RMSE: 7.938552e-08
+- MSE: 6.302060e-15
+
