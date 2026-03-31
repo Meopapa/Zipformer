@@ -1,1 +1,16 @@
-input_features|double|(1, 313, 80)
+"..\\docs\\model_weight_bin\\encoder_embed_conv_0_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_0_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_4_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_4_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_7_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_conv_7_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_depthwise_conv_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_depthwise_conv_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv1_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv1_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv2_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_convnext_pointwise_conv2_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_weight.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_bias.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_norm_log_scale.bin",
+        "..\\docs\\model_weight_bin\\encoder_embed_out_norm_bias.bin"

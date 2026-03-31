@@ -88,10 +88,6 @@ int biasnorm(Tensor *x, Tensor *bias, double log_scale)
     return 1;
 }
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
 void Check_Intermediate(Tensor *tensor_to_check, char *python_bin_path) {
     Tensor *py_tensor;
     TENSOR_Create(&py_tensor, tensor_to_check->dim1, tensor_to_check->dim2, tensor_to_check->dim3, tensor_to_check->dim4);
@@ -145,12 +141,18 @@ void Check_Intermediate(Tensor *tensor_to_check, char *python_bin_path) {
     TENSOR_Free(&py_tensor);
 }
 
-int main()
+/*
+* @brief Conv_Embed block, just for inference.
+*/
+
+int main(int argc, char *argv[]) // main -> subsampling
 {
-    int channel, feature_dim, in_channels;
+    int channel, *metadata;
     double log_scale;
 
-    char *input_file = "..\\docs\\input_features_bin\\input_features.bin"; 
+    char *metadata_file = argv[0];
+
+    char *input_file = "..\\docs\\input_features_bin\\input_features.bin"; // argv[1];
 
     char *param_files[] = {
         "..\\docs\\model_weight_bin\\encoder_embed_conv_0_weight.bin",
@@ -171,6 +173,25 @@ int main()
         "..\\docs\\model_weight_bin\\encoder_embed_out_norm_bias.bin"
     };
 
+    /*
+    argv[2], 
+    argv[3],
+    argv[4],
+    argv[5],
+    argv[6],
+    argv[7],
+    argv[8],
+    argv[9],
+    argv[10],
+    argv[11],
+    argv[12],
+    argv[13],
+    argv[14],
+    argv[15],
+    argv[16],
+    argv[17]
+    */
+
     char *output_files[] = {
         "..\\docs\\inference_outputs_bin\\encoder_embed_conv_0.bin",
         "..\\docs\\inference_outputs_bin\\encoder_embed_conv_1.bin",
@@ -186,6 +207,22 @@ int main()
         "..\\docs\\inference_outputs_bin\\encoder_embed_out.bin",
         "..\\docs\\inference_outputs_bin\\encoder_embed_out_norm.bin"
     };
+
+    /*
+    argv[18],
+    argv[19],
+    argv[20],
+    argv[21],
+    argv[22],
+    argv[23],
+    argv[24],
+    argv[25],
+    argv[26],
+    argv[27],
+    argv[28],
+    argv[29],
+    argv[30]
+    */
 
     // Model input tensor
     Tensor *encoder_model_input; 
@@ -227,7 +264,7 @@ int main()
     Tensor  *encoder_embed_out;
 
     // Create input
-    TENSOR_Create(&encoder_model_input, 1, 1, 313, 80);
+    TENSOR_Create(&encoder_model_input, 1, 1, 313, 80); // Sua thanh parameter
 
     FILE_ReadTensorBinary(encoder_model_input, input_file);
 
@@ -380,3 +417,8 @@ int main()
     Check_Intermediate(encoder_embed_out, output_files[12]);
     return 0;
 }
+
+// int main(int argc, char *argv[])
+// {
+//     return subsampling(argc, argv);
+// }
