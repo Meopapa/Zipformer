@@ -226,6 +226,8 @@ int create_tensors(Tensor **tensors, char *metadata_path, char *config)
 
 int main(char *argv[])
 {
+    assert(argv && "Path pointer error");
+
     int channel, *metadata, *dim;
     double log_scale;
 
